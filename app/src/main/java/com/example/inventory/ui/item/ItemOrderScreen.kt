@@ -48,7 +48,7 @@ object ItemOrderDestination : NavigationDestination {
 fun ItemOrderScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ItemOrderViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    //viewModel: ItemEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -85,7 +85,7 @@ fun ItemOrderScreen(
 //        )
     }
 }
-//
+
 //@Composable
 //fun ItemOrderBody(
 //    itemUiState: ItemUiState,

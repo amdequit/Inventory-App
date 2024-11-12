@@ -42,24 +42,24 @@ class ItemOrderViewModel(
         }
     }
 
-    fun increaseQuantity(amount: Int) {
-        val currentQuantity = itemUiState.itemDetails.quantity.toInt()
-        itemUiState = itemUiState.copy(
-            itemDetails = itemUiState.itemDetails.copy(
-                quantity = (currentQuantity + amount).toString()
-            )
-        )
-    }
-
-    fun updateUiState(itemDetails: ItemDetails) {
-        itemUiState =
-            ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
-    }
-
-    suspend fun updateItem() {
-        if (validateInput(itemUiState.itemDetails)) {
-            itemsRepository.updateItem(itemUiState.itemDetails.toItem())
-        }
-    }
+//    fun increaseQuantity(amount: Int) {
+//        val currentQuantity = itemUiState.itemDetails.quantity.toInt()
+//        itemUiState = itemUiState.copy(
+//            itemDetails = itemUiState.itemDetails.copy(
+//                quantity = (currentQuantity + amount).toString()
+//            )
+//        )
+//    }
+//
+//    fun updateUiState(itemDetails: ItemDetails) {
+//        itemUiState =
+//            ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
+//    }
+//
+//    suspend fun updateItem() {
+//        if (validateInput(itemUiState.itemDetails)) {
+//            itemsRepository.updateItem(itemUiState.itemDetails.toItem())
+//        }
+//    }
 
 }
