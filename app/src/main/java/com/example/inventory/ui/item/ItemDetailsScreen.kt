@@ -78,6 +78,7 @@ object ItemDetailsDestination : NavigationDestination {
 @Composable
 fun ItemDetailsScreen(
     navigateToEditItem: (Int) -> Unit,
+    navigateToOrderItem: (Int) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ItemDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -111,6 +112,7 @@ fun ItemDetailsScreen(
         ItemDetailsBody(
             itemDetailsUiState = uiState.value,
             onSellItem = { viewModel.reduceQuantityByOne() },
+            onOrderItem = { navigateToOrderItem(uiState.value.itemDetails.id) },
             onDelete = {
                 coroutineScope.launch {
                     viewModel.deleteItem()
@@ -133,6 +135,7 @@ private fun ItemDetailsBody(
     itemDetailsUiState: ItemDetailsUiState,
     onSellItem: () -> Unit,
     onDelete: () -> Unit,
+    onOrderItem: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -159,6 +162,14 @@ private fun ItemDetailsBody(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.delete))
+        }
+        Button(
+            onClick = onOrderItem, //FIXME: Change to order item dialog
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.small,
+            enabled = true
+        ) {
+            Text(stringResource(R.string.order))
         }
         if (deleteConfirmationRequired) {
             DeleteConfirmationDialog(

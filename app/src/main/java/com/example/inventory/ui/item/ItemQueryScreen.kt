@@ -111,6 +111,6 @@ private fun ItemDetailsRow(
 @Composable
 fun ItemQueryScreenPreview() {
     InventoryTheme {
-
+        ItemQueryScreen(navigateBack = { /*Do nothing*/ })
     }
 }

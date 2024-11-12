@@ -31,6 +31,8 @@ import com.example.inventory.ui.item.ItemEditDestination
 import com.example.inventory.ui.item.ItemEditScreen
 import com.example.inventory.ui.item.ItemEntryDestination
 import com.example.inventory.ui.item.ItemEntryScreen
+import com.example.inventory.ui.item.ItemOrderDestination
+import com.example.inventory.ui.item.ItemOrderScreen
 import com.example.inventory.ui.item.ItemQueryDestination
 import com.example.inventory.ui.item.ItemQueryScreen
 
@@ -67,6 +69,9 @@ fun InventoryNavHost(
                 {
                     navController.navigate("${ItemEditDestination.route}/$it")
                 },
+                navigateToOrderItem = {
+                    navController.navigate(ItemOrderDestination.route)
+                },
                 navigateBack = { navController.navigateUp() })
         }
         composable(
@@ -80,6 +85,14 @@ fun InventoryNavHost(
         }
         composable(route = ItemQueryDestination.route) {
             ItemQueryScreen(navigateBack = { navController.navigateUp() })
+        }
+        composable(
+            route = ItemOrderDestination.routeWithArgs,
+            arguments = listOf(navArgument(ItemOrderDestination.itemIdArg) {
+                type = NavType.IntType
+            })
+        ) {
+            ItemOrderScreen(navigateBack = { navController.popBackStack() })
         }
     }
 }

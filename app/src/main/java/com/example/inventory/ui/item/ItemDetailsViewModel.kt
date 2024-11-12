@@ -61,9 +61,7 @@ class ItemDetailsViewModel(
             if (currentItem.quantity > 0) {
                 itemsRepository.updateItem(currentItem.copy(quantity = currentItem.quantity - 1))
             }
-
         }
-
     }
 
     suspend fun deleteItem() {
