@@ -27,14 +27,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,6 +57,15 @@ import com.example.inventory.data.Item
 import com.example.inventory.ui.item.formatedPrice
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.theme.InventoryTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.inventory.ui.AppViewModelProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.ImeAction
+
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -67,18 +80,55 @@ object HomeDestination : NavigationDestination {
 fun HomeScreen(
     navigateToItemEntry: () -> Unit,
     navigateToItemUpdate: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    navigateToSearchItem: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val homeUiState by viewModel.homeUiState.collectAsState()
+
+    var query by rememberSaveable { mutableStateOf("") }
+
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            InventoryTopAppBar(
-                title = stringResource(HomeDestination.titleRes),
-                canNavigateBack = false,
-                scrollBehavior = scrollBehavior
-            )
+            Column {
+                Row {
+                    InventoryTopAppBar(
+                        title = stringResource(HomeDestination.titleRes),
+                        canNavigateBack = false,
+                        scrollBehavior = scrollBehavior
+                    )
+                }
+                Row {
+                    // Search bar
+                    Column(
+                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = query,
+                                onValueChange = { query = it },
+                                singleLine = true,
+                                label = { Text("Search for item by ID...") },
+                                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                            )
+                            Button(
+                                onClick = navigateToSearchItem,
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = stringResource(R.string.search)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -94,7 +144,7 @@ fun HomeScreen(
         },
     ) { innerPadding ->
         HomeBody(
-            itemList = listOf(),
+            itemList = homeUiState.itemList,
             onItemClick = navigateToItemUpdate,
             modifier = modifier.fillMaxSize(),
             contentPadding = innerPadding,
@@ -184,6 +234,39 @@ private fun InventoryItem(
     }
 }
 
+@Composable
+private fun SearchButton(
+    onSearchButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var query by rememberSaveable { mutableStateOf("") }
+    // Search bar
+    Column(
+        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = { query = it },
+                singleLine = true,
+                label = { Text("Search for item by ID...") },
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+            )
+            Button(
+                onClick = onSearchButtonClicked,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(R.string.search)
+                )
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun HomeBodyPreview() {
@@ -209,5 +292,13 @@ fun InventoryItemPreview() {
         InventoryItem(
             Item(1, "Game", 100.0, 20),
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchButtonPreview() {
+    InventoryTheme {
+        //SearchButton(onClick = {})
     }
 }
